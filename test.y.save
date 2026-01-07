@@ -1,0 +1,44 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+int yylex(void);
+void yyerror(const char *s);
+#ifdef __cplusplus
+}
+#endif
+%}
+
+%union {
+    int ival;
+    char* sval;
+}
+
+%token VAR IF ELSE WHILE
+%token INTEGER IDENTIFIER
+%token EQ NEQ LT GT LE GE
+%token PLUS MINUS MUL DIV
+%token ASSIGN SEMI
+%token LPAREN RPAREN
+%token LBRACES RBRACES
+
+%%
+program
+    : program statement
+    | /* empty */
+    ;
+
+statement
+    : VAR IDENTIFIER ASSIGN INTEGER SEMI
+        { printf("Parsed: var declaration\n"); }
+    | IDENTIFIER ASSIGN INTEGER SEMI
+        { printf("Parsed: assignment\n"); }
+    ;
+%%
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Parser error: %s\n", s);
+}
